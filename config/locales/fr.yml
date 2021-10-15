@@ -9,6 +9,8 @@ fr:
       participatory_process:
         private_space: Espace privé
   decidim:
+    accessibility:
+      skip_button: Passer
     admin:
       participatory_space_private_users:
         create:
@@ -61,5 +63,6 @@ fr:
         sign_in: S'identifier
         sign_up: S'inscire
       user_menu:
+        account: Compte
         conversations: Conversations
         notifications: Notifications

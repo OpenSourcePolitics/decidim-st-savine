@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # This migration comes from decidim (originally 20210629172525)
 
 class FixBlockedUserNamesInActionLog < ActiveRecord::Migration[5.2]
@@ -35,9 +36,9 @@ class FixBlockedUserNamesInActionLog < ActiveRecord::Migration[5.2]
   end
 
   def execute_query(query)
-    rawconn.prepare("statement1", query)
-    rawconn.exec_prepared("statement1", ["Decidim::User", "block"])
-    rawconn.exec("DEALLOCATE statement1")
+    rawconn.prepare('statement1', query)
+    rawconn.exec_prepared('statement1', ['Decidim::User', 'block'])
+    rawconn.exec('DEALLOCATE statement1')
   end
 
   def rawconn

@@ -119,7 +119,7 @@ describe "Homepage", type: :system do
       end
 
       context "with header snippets" do
-        let(:snippet) { "<meta data-hello=\"This is the organization header_snippet field\">" }
+        let(:snippet) { '<meta data-hello="This is the organization header_snippet field">' }
         let(:organization) { create(:organization, official_url: official_url, header_snippets: snippet) }
 
         it "does not include the header snippets" do
@@ -221,7 +221,6 @@ describe "Homepage", type: :system do
               expect(page).to have_content(static_page_1.title["en"])
               expect(page).to have_no_content(static_page_2.title["en"])
               expect(page).to have_no_content(static_page_3.title["en"])
-              expect(page).to have_content(static_page_topic1.title["en"])
               expect(page).to have_no_content(static_page_topic2.title["en"])
               expect(page).to have_no_content(static_page_topic3.title["en"])
 

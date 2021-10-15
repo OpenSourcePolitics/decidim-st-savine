@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # This migration comes from decidim (originally 20180508111640)
 
 class AddTosVersionToOrganization < ActiveRecord::Migration[5.1]
@@ -9,7 +10,7 @@ class AddTosVersionToOrganization < ActiveRecord::Migration[5.1]
   def up
     add_column :decidim_organizations, :tos_version, :datetime
     Organization.find_each do |organization|
-      tos = Decidim::StaticPage.find_by(slug: "terms-and-conditions", organization: organization)
+      tos = Decidim::StaticPage.find_by(slug: 'terms-and-conditions', organization: organization)
       tos_version = tos ? tos.updated_at : Time.current
       organization.update(tos_version: tos_version)
     end
