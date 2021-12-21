@@ -18,16 +18,23 @@ module Decidim
 
     def execute
       create_backup_dir
-      backup_database if check_scope?(:db)
-      backup_uploads if check_scope?(:uploads)
-      backup_env if check_scope?(:env)
-      backup_git if check_scope?(:git)
 
-      generate_timestamp_file unless @options[:timestamp_in_filename]
+      if has_enough_disk_space?
+        create_backup_export
 
-      Decidim::S3SyncService.run(local_backup_files: @local_files) if @options[:s3sync]
+        if @options[:s3sync]
+          Decidim::S3SyncService.run(
+            datestamp: Time.zone.now.strftime("%Y-%m-%d"),
+            local_backup_files: @local_files
+          )
+        end
 
-      clean_local_files unless @options[:keep_local_files]
+        Decidim::S3RetentionService.run if @options[:s3retention]
+
+        clean_local_files unless @options[:keep_local_files]
+      else
+        Rails.logger.error "Not enough space left for backup : #{available_space} Go available for #{@options[:disk_space_limit]} Go needed"
+      end
     end
 
     def default_options
@@ -39,6 +46,7 @@ module Decidim
         backup_timestamp_file: Rails.application.config.backup[:timestamp_file],
         timestamp_in_filename: true,
         s3sync: Rails.application.config.backup.dig(:s3sync, :enabled),
+        s3retention: Rails.application.config.backup.dig(:s3retention, :enabled),
         keep_local_files: true,
         scope: :all
       }
@@ -49,6 +57,14 @@ module Decidim
       return if File.exist?(backup_dir)
 
       FileUtils.mkdir_p(backup_dir)
+    end
+
+    def create_backup_export
+      backup_database if check_scope?(:db)
+      backup_uploads if check_scope?(:uploads)
+      backup_env if check_scope?(:env)
+      backup_git if check_scope?(:git)
+      generate_timestamp_file unless @options[:timestamp_in_filename]
     end
 
     def backup_database

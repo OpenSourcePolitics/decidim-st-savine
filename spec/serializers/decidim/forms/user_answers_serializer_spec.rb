@@ -114,7 +114,7 @@ module Decidim
 
           it "the creation of the answer" do
             key = I18n.t(:created_at, scope: "decidim.forms.user_answers_serializer")
-            expect(serialized[key]).not_to be_empty
+            expect(serialized[key]).to eq an_answer.created_at.to_s(:db)
           end
 
           it "the IP hash of the user" do
